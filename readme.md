@@ -192,6 +192,18 @@ The feedback loops then becomes:
 2. Regenerate the Elysia types
 3. Fix the compiler error that should now be present (assuming a change is needed)
 
+We can also use Elysia's [client library](https://elysiajs.com/eden/treaty/overview) with our types to power our client
+
+```typescript
+import { treaty } from "@elysiajs/eden"
+
+const client = treaty<app>("http://localhost:3000");
+// data is type Pet
+const { data } = await client.pets.get({ query: { filter: "dog" } });
+// error is constrained to { status: 404; value: string; } 
+const { error } = await client.pets({ petId: "123" }).get();
+```
+
 Future additions:
 * Generate runtime boilerplate for Elysia -- user should really only have to think about service handlers
 * How can we make the errors not horrible? This is pretty much a non-starter if errors suck, which they do right now. I believe we can improve them by massaging the output of the code generation a bit. TBD

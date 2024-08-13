@@ -1,5 +1,5 @@
 {
-  "name": "alloy-template",
+  "name": "tsp-elysia-emitter",
   "version": "1.0.0",
   "type": "module",
   "private": true,
@@ -24,6 +24,11 @@
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.24.9",
     "@rollup/plugin-babel": "^6.0.4",
+    "@types/bun": "^1.1.6",
+    "@typespec/compiler": "latest",
+    "@typespec/http": "latest",
+    "@typespec/openapi3": "latest",
+    "@typespec/rest": "latest",
     "babel-preset-alloy": "https://pkg.pr.new/alloy-framework/alloy/babel-preset-alloy@50fd032",
     "concurrently": "^8.2.2",
     "typescript": "^5.5.3",

@@ -6,7 +6,7 @@ export async function $onEmit(context: EmitContext) {
   const services = getAllHttpServices(context.program);
   const service = services.at(0)!.at(0) as HttpService;
 
-  console.log(parseHTTPService(service));
+  parseHTTPService(service);
 
   if (!context.program.compilerOptions.noEmit) {
     await emitFile(context.program, {

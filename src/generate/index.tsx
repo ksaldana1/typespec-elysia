@@ -1,5 +1,6 @@
-import { Output, refkey, render } from "@alloy-js/core";
+import { code, Output, refkey, render } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import { Model } from "@typespec/compiler";
 
 export const output = render(
   <Output>
@@ -26,7 +27,7 @@ export const output = render(
       <ts.Reference refkey={refkey("test3")} />; const v4 ={" "}
       <ts.Reference refkey={refkey("test4")} />;
     </ts.SourceFile>
-  </Output>
+  </Output>,
 );
 
 const elysia = ts.createPackage({
@@ -34,7 +35,7 @@ const elysia = ts.createPackage({
   version: "1.1.6",
   descriptor: {
     ".": {
-      named: ["Elysia"],
+      named: ["Elysia", "t"],
     },
   },
 });
@@ -49,5 +50,26 @@ export const elysiaOutput = render(
         </ts.InterfaceExpression>
       </ts.TypeDeclaration>
     </ts.SourceFile>
-  </Output>
+  </Output>,
 );
+
+export const modelOutput = (models: Map<string, Model>) => {
+  for (const [modelName, model] of models) {
+    const tree = render(
+      <Output externals={[elysia]}>
+        <ts.SourceFile path="server.ts">
+          const x = code{generateModel({ model })}
+        </ts.SourceFile>
+      </Output>,
+    );
+    console.log(tree);
+  }
+};
+
+const generateModel = ({ model }: { model: Model }) => {
+  return code`${(<ts.Reference refkey={elysia.t} />)}(${(
+    <ts.ObjectExpression>
+      <ts.ObjectProperty name="name" value="t.String()" />
+    </ts.ObjectExpression>
+  )})`;
+};

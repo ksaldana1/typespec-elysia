@@ -18,7 +18,8 @@
   "description": "",
   "dependencies": {
     "@alloy-js/core": "https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@50fd032",
-    "@alloy-js/typescript": "https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@50fd032"
+    "@alloy-js/typescript": "https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@50fd032",
+    "elysia": "^1.1.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",

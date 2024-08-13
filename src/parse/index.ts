@@ -1,7 +1,9 @@
 import { HttpService } from "@typespec/http";
+import { elysiaOutput } from "../generate/index.js";
+console.log(elysiaOutput);
 
 export function parseHTTPService(service: HttpService) {
-  return getModels(service);
+  return service.namespace;
 }
 
 export function getModels(n: HttpService) {

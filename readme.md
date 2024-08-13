@@ -12,7 +12,7 @@ TypeSpec solves the problem of API expressivity and serves as the single source 
 error if the runtime server does not adhere to the contract expressed by the TypeSpec doc. 
 
 Given the basic `PetStore` example
-```typespec
+```typescript
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";

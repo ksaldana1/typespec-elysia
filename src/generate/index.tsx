@@ -30,7 +30,7 @@ export const output = render(
   </Output>,
 );
 
-const elysia = ts.createPackage({
+export const elysia = ts.createPackage({
   name: "elysia",
   version: "1.1.6",
   descriptor: {
@@ -58,16 +58,15 @@ export const modelOutput = (models: Map<string, Model>) => {
     const tree = render(
       <Output externals={[elysia]}>
         <ts.SourceFile path="server.ts">
-          const x = code{generateModel({ model })}
+          const x = {generateModel({ model })}
         </ts.SourceFile>
       </Output>,
     );
-    console.log(tree);
   }
 };
 
 const generateModel = ({ model }: { model: Model }) => {
-  return code`${(<ts.Reference refkey={elysia.t} />)}(${(
+  return code`${(<ts.Reference refkey={elysia.t} />)}.(${(
     <ts.ObjectExpression>
       <ts.ObjectProperty name="name" value="t.String()" />
     </ts.ObjectExpression>

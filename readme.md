@@ -198,7 +198,7 @@ We can also use Elysia's [client library](https://elysiajs.com/eden/treaty/overv
 import { treaty } from "@elysiajs/eden"
 
 const client = treaty<app>("http://localhost:3000");
-// data is type Pet
+// data is type Pet[]
 const { data } = await client.pets.get({ query: { filter: "dog" } });
 // error is constrained to { status: 404; value: string; } 
 const { error } = await client.pets({ petId: "123" }).get();

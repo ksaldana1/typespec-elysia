@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 
-export declare const todoServer: Elysia<
+export type TodoServer = Elysia<
   "",
   false,
   {
@@ -71,7 +71,7 @@ export declare const todoServer: Elysia<
   }
 >;
 
-export declare const petServer: Elysia<
+export type PetServer = Elysia<
   "",
   false,
   {

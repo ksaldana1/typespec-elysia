@@ -46,16 +46,10 @@ export const server = new Elysia({ name: "Pet Store" })
     },
     { response: "Pets", query: t.Object({ filter: t.Optional(petType) }) },
   )
-  .get(
-    "/pets/:petId",
-    ({ params, error }) => {
-      error("Not Found", "Not found");
-      return _db[params.petId];
-    },
-    {
-      response: {
-        200: "Pet",
-        404: t.String(),
-      },
-    },
-  ) satisfies PetServer;
+  .get("/pets/:petId", ({ params, error }) => {
+    const pet = _db[params.petId];
+    if (!pet) {
+      return error(404, "Not found");
+    }
+    return _db[params.petId];
+  }) satisfies PetServer;

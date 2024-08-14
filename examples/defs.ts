@@ -37,7 +37,11 @@ export type TodoServer = Elysia<
         query: unknown;
         headers: unknown;
         response: {
-          200: unknown;
+          200: {
+            id: number;
+            text: string;
+            completed: boolean;
+          }[];
         };
       };
     };
@@ -52,8 +56,12 @@ export type TodoServer = Elysia<
           query: unknown;
           headers: unknown;
           response: {
-            readonly 200: unknown;
-            readonly 404: unknown;
+            readonly 200: {
+              id: number;
+              text: string;
+              completed: boolean;
+            };
+            readonly 404: string;
           };
         };
       };
@@ -108,10 +116,17 @@ export type PetServer = Elysia<
       get: {
         body: unknown;
         params: {};
-        query: unknown;
+        query: {
+          filter?: "cat" | "dog" | "fish" | "bird" | "reptile";
+        };
         headers: unknown;
         response: {
-          200: unknown;
+          readonly 200: {
+            name: string;
+            id: number;
+            age: number;
+            kind: "cat" | "dog" | "fish" | "bird" | "reptile";
+          }[];
         };
       };
     };
@@ -126,8 +141,13 @@ export type PetServer = Elysia<
           query: unknown;
           headers: unknown;
           response: {
-            readonly 200: unknown;
-            readonly 404: unknown;
+            readonly 200: {
+              name: string;
+              id: number;
+              age: number;
+              kind: "cat" | "dog" | "fish" | "bird" | "reptile";
+            };
+            readonly 404: string;
           };
         };
       };

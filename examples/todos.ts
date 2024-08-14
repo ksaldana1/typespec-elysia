@@ -27,26 +27,13 @@ export const server = new Elysia({ name: "Todo Store" })
     Todo,
     Todos,
   })
-  .get(
-    "/todos",
-    () => {
-      return Object.values(_db);
-    },
-    { response: "Todos" },
-  )
-  .get(
-    "/todos/:todoId",
-    ({ params, error }) => {
-      const todo = _db[params.todoId];
-      if (!todo) {
-        return error(404, "Not found");
-      }
-      return todo;
-    },
-    {
-      response: {
-        200: "Todo",
-        404: t.String(),
-      },
-    },
-  ) satisfies TodoServer;
+  .get("/todos", () => {
+    return Object.values(_db);
+  })
+  .get("/todos/:todoId", ({ params, error }) => {
+    const todo = _db[params.todoId];
+    if (!todo) {
+      return error(404, "Not found");
+    }
+    return todo;
+  }) satisfies TodoServer;

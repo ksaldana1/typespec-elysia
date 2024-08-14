@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
+import "./todos.tsp";
 
 using TypeSpec.Http;
 

@@ -3,8 +3,12 @@ import { server as petServer } from "./pets";
 import { server as todoServer } from "./todos";
 import { Elysia } from "elysia";
 import { UnionToIntersection } from "type-fest";
+import { cors } from "@elysiajs/cors";
+import { logger } from "@bogeychan/elysia-logger";
 
 export const app = new Elysia()
+  .use(logger())
+  .use(cors())
   .use(petServer)
   .use(todoServer) satisfies Gateway<[PetServer, TodoServer]>;
 

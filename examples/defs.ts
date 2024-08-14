@@ -4,10 +4,10 @@ export type TodoServer = Elysia<
   "",
   false,
   {
-    decorator: {};
-    store: {};
-    derive: {};
-    resolve: {};
+    decorator: any;
+    store: any;
+    derive: any;
+    resolve: any;
   },
   {
     type: {
@@ -25,9 +25,9 @@ export type TodoServer = Elysia<
     error: {};
   },
   {
-    schema: {};
-    macro: {};
-    macroFn: {};
+    schema: any;
+    macro: any;
+    macroFn: any;
   },
   {
     todos: {

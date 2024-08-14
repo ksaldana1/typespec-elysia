@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
-import "./todos.tsp";
 
 using TypeSpec.Http;
 
@@ -52,3 +51,4 @@ model NotFoundError {
   code: 404;
   message: string;
 }
+

@@ -44,7 +44,7 @@ export const server = new Elysia({ name: "Pet Store" })
     () => {
       return Object.values(_db);
     },
-    { response: "Pets", query: t.Object({ filter: t.Optional(petType) }) },
+    { query: t.Object({ filter: t.Optional(petType) }) },
   )
   .get("/pets/:petId", ({ params, error }) => {
     const pet = _db[params.petId];

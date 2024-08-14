@@ -25,8 +25,8 @@ type Routes<T extends Array<Elysia<any, any, any, any>>> = UnionToIntersection<
 type Gateway<T extends Array<Elysia<any, any, any, any>>> = Elysia<
   "",
   false,
-  { decorator: {}; derive: {}; resolve: {}; store: {} },
+  any,
   Definitions<T>,
-  { macro: {}; macroFn: {}; schema: {} },
+  any,
   Routes<T>
 >;

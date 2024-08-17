@@ -5,6 +5,7 @@ import { Elysia } from "elysia";
 import { UnionToIntersection } from "type-fest";
 import { cors } from "@elysiajs/cors";
 import { logger } from "@bogeychan/elysia-logger";
+import { treaty } from "@elysiajs/eden";
 
 export const app = new Elysia()
   .use(logger())
@@ -34,3 +35,9 @@ type Gateway<T extends Array<Elysia<any, any, any, any>>> = Elysia<
   any,
   Routes<T>
 >;
+
+export const client = treaty<Gateway<[PetServer, TodoServer]>>(
+  "http://localhost:3000",
+);
+
+const { data, error } = await client.pets.get({ query: { filter: "cat" } });

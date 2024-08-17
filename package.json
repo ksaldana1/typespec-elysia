@@ -21,7 +21,9 @@
     "@alloy-js/typescript": "https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@50fd032",
     "@bogeychan/elysia-logger": "^0.1.1",
     "@elysiajs/cors": "^1.1.0",
-    "elysia": "^1.1.6"
+    "@elysiajs/eden": "^1.1.2",
+    "elysia": "^1.1.6",
+    "ts-pattern": "^5.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",

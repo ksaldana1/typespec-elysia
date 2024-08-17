@@ -1,34 +1,8 @@
-import { code, Output, refkey, render } from "@alloy-js/core";
+import { Output, code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Model } from "@typespec/compiler";
-
-export const output = render(
-  <Output>
-    <ts.SourceFile path="test1.ts">
-      <ts.FunctionDeclaration export default name="test1">
-        console.log("foo bar baz");
-      </ts.FunctionDeclaration>
-      <ts.FunctionDeclaration export name="test2" />
-    </ts.SourceFile>
-
-    <ts.SourceFile path="test2.ts">
-      <ts.FunctionDeclaration
-        export
-        default
-        name="test1"
-        refkey={refkey("test3")}
-      />
-      <ts.FunctionDeclaration export name="test2" refkey={refkey("test4")} />
-    </ts.SourceFile>
-
-    <ts.SourceFile path="test3.ts">
-      const v1 = <ts.Reference refkey={refkey("test1")} />; const v2 ={" "}
-      <ts.Reference refkey={refkey("test2")} />; const v3 ={" "}
-      <ts.Reference refkey={refkey("test3")} />; const v4 ={" "}
-      <ts.Reference refkey={refkey("test4")} />;
-    </ts.SourceFile>
-  </Output>,
-);
+import { ModelProperty, type Model } from "@typespec/compiler";
+import { type HttpService } from "@typespec/http";
+import { match, P } from "ts-pattern";
 
 export const elysia = ts.createPackage({
   name: "elysia",
@@ -40,35 +14,58 @@ export const elysia = ts.createPackage({
   },
 });
 
-export const elysiaOutput = render(
-  <Output externals={[elysia]}>
-    <ts.SourceFile path="server.ts">
-      const x = <ts.Reference refkey={elysia.Elysia} />
-      <ts.TypeDeclaration name="App" export refkey={refkey("app")}>
-        <ts.InterfaceExpression>
-          <ts.InterfaceMember name="name" type="string" />
-        </ts.InterfaceExpression>
-      </ts.TypeDeclaration>
-    </ts.SourceFile>
-  </Output>,
-);
-
-export const modelOutput = (models: Map<string, Model>) => {
-  for (const [modelName, model] of models) {
-    const tree = render(
-      <Output externals={[elysia]}>
-        <ts.SourceFile path="server.ts">
-          const x = {generateModel({ model })}
-        </ts.SourceFile>
-      </Output>,
-    );
-  }
+const Model = ({ model }: { model: Model }) => {
+  return (
+    <ts.VarDeclaration export name={model.name}>
+      {code`t.Object(${(
+        <ts.ObjectExpression>
+          {Array.from(model.properties.values()).map((property) => {
+            return (
+              <>
+                <ts.ObjectProperty
+                  name={property.name}
+                  value={propertyTypeToValue({ property })}
+                />
+                ,
+              </>
+            );
+          })}
+        </ts.ObjectExpression>
+      )})`}
+    </ts.VarDeclaration>
+  );
 };
 
-const generateModel = ({ model }: { model: Model }) => {
-  return code`${(<ts.Reference refkey={elysia.t} />)}.(${(
-    <ts.ObjectExpression>
-      <ts.ObjectProperty name="name" value="t.String()" />
-    </ts.ObjectExpression>
-  )})`;
+const propertyTypeToValue = ({ property }: { property: ModelProperty }) => {
+  if (property.type.kind === "Enum") {
+    console.log(Array.from(property.type.members.values()));
+  }
+  return match(property.type)
+    .with({ kind: "Scalar", name: "int32" }, () => "t.Number()")
+    .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")
+    .with({ kind: "Scalar", name: "string" }, () => "t.String()")
+    .with({ kind: "Number" }, ({ value }) => `t.Literal(${value})`)
+    .with({ kind: "Enum" }, ({ members }) => {
+      const m = Array.from(members.values());
+      return `t.Union([
+        ${m.map((property) => `t.Literal("${property.name}")`)}
+    ])`;
+    })
+    .otherwise(() => "t.Number()");
+};
+
+export const ElysiaOutput = ({ services }: { services: HttpService[] }) => {
+  return (
+    <Output externals={[elysia]}>
+      <ts.SourceFile path="models.ts">
+        {"import {t} from 'elysia'"}
+        {services
+          .map((service) => Array.from(service.namespace.models.values()))
+          .flat()
+          .map((model) => (
+            <Model model={model} />
+          ))}
+      </ts.SourceFile>
+    </Output>
+  );
 };

@@ -1,6 +1,19 @@
 import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Enum } from "@typespec/compiler";
+import { HttpService } from "@typespec/http";
+
+export const Enums = ({ services }: { services: HttpService[] }) => {
+  return services
+    .map((service) => Array.from(service.namespace.enums.values()))
+    .flat()
+    .map((e) => (
+      <>
+        <EnumModel e={e} />
+        {"\n"}
+      </>
+    ));
+};
 
 export const EnumModel = ({ e }: { e: Enum }) => {
   return (

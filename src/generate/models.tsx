@@ -1,7 +1,20 @@
 import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { type Model as ModelType, ModelProperty } from "@typespec/compiler";
+import { HttpService } from "@typespec/http";
 import { match } from "ts-pattern";
+
+export const Models = ({ services }: { services: HttpService[] }) => {
+  return services
+    .map((service) => Array.from(service.namespace.models.values()))
+    .flat()
+    .map((model) => (
+      <>
+        <Model model={model} />
+        {"\n"}
+      </>
+    ));
+};
 
 export const Model = ({ model }: { model: ModelType }) => {
   return (

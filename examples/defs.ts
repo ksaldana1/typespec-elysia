@@ -1,4 +1,40 @@
-import { Elysia } from "elysia";
+import { Elysia, Static } from "elysia";
+import { Todo } from "../tsp-output/tsp-elysia-emitter/models";
+import { SimplifyDeep } from "type-fest";
+import * as models from "../tsp-output/tsp-elysia-emitter/models";
+
+export type Definition = {
+  Todo: Static<typeof Todo>;
+  Todos: Array<Static<typeof Todo>>;
+};
+
+type Routes = {
+  todos: {
+    get: {
+      body: unknown;
+      params: {};
+      query: unknown;
+      headers: unknown;
+      response: {
+        200: Definition["Todos"];
+      };
+    };
+    ":todoId": {
+      get: {
+        body: unknown;
+        params: {
+          todoId: string;
+        };
+        query: unknown;
+        headers: unknown;
+        response: {
+          readonly 200: Definition["Todo"];
+          readonly 404: string;
+        };
+      };
+    };
+  };
+};
 
 export type TodoServer = Elysia<
   "",
@@ -10,18 +46,7 @@ export type TodoServer = Elysia<
     resolve: any;
   },
   {
-    type: {
-      readonly Todo: {
-        id: number;
-        text: string;
-        completed: boolean;
-      };
-      readonly Todos: {
-        id: number;
-        text: string;
-        completed: boolean;
-      }[];
-    };
+    type: SimplifyDeep<Definition>;
     error: {};
   },
   {
@@ -29,44 +54,7 @@ export type TodoServer = Elysia<
     macro: any;
     macroFn: any;
   },
-  {
-    todos: {
-      get: {
-        body: unknown;
-        params: {};
-        query: unknown;
-        headers: unknown;
-        response: {
-          200: {
-            id: number;
-            text: string;
-            completed: boolean;
-          }[];
-        };
-      };
-    };
-  } & {
-    todos: {
-      ":todoId": {
-        get: {
-          body: unknown;
-          params: {
-            todoId: string;
-          };
-          query: unknown;
-          headers: unknown;
-          response: {
-            readonly 200: {
-              id: number;
-              text: string;
-              completed: boolean;
-            };
-            readonly 404: string;
-          };
-        };
-      };
-    };
-  },
+  SimplifyDeep<Routes>,
   {
     derive: {};
     resolve: {};
@@ -79,6 +67,12 @@ export type TodoServer = Elysia<
   }
 >;
 
+type PetDefinitions = {
+  petType: Static<typeof models.petType>;
+  Pet: Static<typeof models.Pet>;
+  Pets: Array<Static<typeof models.Pet>>;
+};
+
 export type PetServer = Elysia<
   "",
   false,
@@ -89,21 +83,7 @@ export type PetServer = Elysia<
     resolve: {};
   },
   {
-    type: {
-      readonly petType: "cat" | "dog" | "fish" | "bird" | "reptile";
-      readonly Pet: {
-        name: string;
-        id: number;
-        age: number;
-        kind: "cat" | "dog" | "fish" | "bird" | "reptile";
-      };
-      readonly Pets: {
-        name: string;
-        id: number;
-        age: number;
-        kind: "cat" | "dog" | "fish" | "bird" | "reptile";
-      }[];
-    };
+    type: PetDefinitions;
     error: {};
   },
   {

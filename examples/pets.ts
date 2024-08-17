@@ -41,10 +41,10 @@ export const server = new Elysia({ name: "Pet Store" })
   })
   .get(
     "/pets",
-    () => {
+    ({}) => {
       return Object.values(_db);
     },
-    { query: t.Object({ filter: t.Optional(petType) }) },
+    { query: t.Object({ filter: t.Optional(petType) }) }
   )
   .get("/pets/:petId", ({ params, error }) => {
     const pet = _db[params.petId];

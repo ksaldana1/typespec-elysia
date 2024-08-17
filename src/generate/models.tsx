@@ -20,7 +20,7 @@ export const Model = ({ model }: { model: ModelType }) => {
             );
           })}
         </ts.ObjectExpression>
-      )})`}
+      )})\n`}
     </ts.VarDeclaration>
   );
 };
@@ -31,11 +31,6 @@ const propertyTypeToValue = ({ property }: { property: ModelProperty }) => {
     .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")
     .with({ kind: "Scalar", name: "string" }, () => "t.String()")
     .with({ kind: "Number" }, ({ value }) => `t.Literal(${value})`)
-    .with({ kind: "Enum" }, ({ members }) => {
-      const m = Array.from(members.values());
-      return `t.Union([
-        ${m.map((property) => `t.Literal("${property.name}")`)}
-    ])`;
-    })
+    .with({ kind: "Enum" }, ({ name }) => name)
     .otherwise(() => "t.Number()");
 };

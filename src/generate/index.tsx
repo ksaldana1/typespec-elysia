@@ -37,9 +37,6 @@ const Model = ({ model }: { model: Model }) => {
 };
 
 const propertyTypeToValue = ({ property }: { property: ModelProperty }) => {
-  if (property.type.kind === "Enum") {
-    console.log(Array.from(property.type.members.values()));
-  }
   return match(property.type)
     .with({ kind: "Scalar", name: "int32" }, () => "t.Number()")
     .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")

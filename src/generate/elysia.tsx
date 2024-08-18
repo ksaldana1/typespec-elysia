@@ -67,19 +67,34 @@ export const Routes = ({ services }: { services: HttpService[] }) => {
 };
 
 export const Route = ({ operation }: { operation: HttpOperation }) => {
-  console.log("op", operation);
   const name =
     operation.path.split("/").filter((v) => Boolean(v))?.length === 1
       ? operation.verb
       : operation.operation.name;
+
   return (
-    <ts.InterfaceMember
-      name={name}
-      type={
-        <ts.InterfaceExpression>
-          <ts.InterfaceMember name={operation.operation.name} type="string" />
-        </ts.InterfaceExpression>
-      }
-    />
+    <>
+      <ts.InterfaceMember
+        name={name === operation.verb ? name : "testing"}
+        type={
+          <ts.InterfaceExpression>
+            <RouteTypes operation={operation} />
+          </ts.InterfaceExpression>
+        }
+      />
+      {";"}
+    </>
+  );
+};
+
+export const RouteTypes = ({ operation }: { operation: HttpOperation }) => {
+  return (
+    <>
+      <ts.InterfaceMember name="body" type="unknown" />
+      <ts.InterfaceMember name="params" type="{}" />
+      <ts.InterfaceMember name="query" type="unknown" />
+      <ts.InterfaceMember name="headers" type="unknown" />
+      <ts.InterfaceMember name="response" type="unknown" />
+    </>
   );
 };

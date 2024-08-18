@@ -9,9 +9,12 @@ export const petType = t.Union([
 ]);
 
 export const Pet = t.Object({
-  id: t.Number(),
+  id: t.Number({}),
   name: t.String(),
-  age: t.Number(),
+  age: t.Number({
+    minimum: 0,
+    maximum: 100,
+  }),
   kind: petType,
 });
 
@@ -21,7 +24,7 @@ export const NotFoundError = t.Object({
 });
 
 export const Todo = t.Object({
-  id: t.Number(),
+  id: t.Number({}),
   text: t.String(),
   completed: t.Boolean(),
 });

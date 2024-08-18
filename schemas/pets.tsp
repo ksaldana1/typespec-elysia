@@ -51,3 +51,4 @@ model NotFoundError {
   code: 404;
   message: string;
 }
+

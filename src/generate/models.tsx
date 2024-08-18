@@ -69,9 +69,6 @@ const propertyTypeToValue = ({
     })
     .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")
     .with({ kind: "Scalar", name: "string" }, () => {
-      if (property.name === "age") {
-        property;
-      }
       const [minLength, maxLength] = [
         getMinLength(program, property),
         getMaxLength(program, property),

@@ -15,6 +15,7 @@ export const Pet = t.Object({
   }),
   age: t.Number({
     minimum: 0,
+    maximum: 100,
   }),
   kind: petType,
 });

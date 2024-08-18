@@ -1,5 +1,5 @@
 import { Elysia, t, type Static } from "elysia";
-import { type PetService } from "./defs.js";
+import { PetService } from "./defs.js";
 
 const petType = t.Union([
   t.Literal("cat"),

@@ -14,11 +14,11 @@ export const Pet = t.Object({
           
         })
   ,name: t.String({
-          
+          minLength: 1,
           
         })
   ,age: t.Number({
-          
+          minimum: 0,
           
         })
   ,kind: petType

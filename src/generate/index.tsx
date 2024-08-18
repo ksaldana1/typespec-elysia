@@ -3,6 +3,8 @@ import * as ts from "@alloy-js/typescript";
 import { type HttpService } from "@typespec/http";
 import { Enums } from "./enums.js";
 import { Models } from "./models.js";
+import { type Program } from "@typespec/compiler";
+import { ProgramProvider } from "./context/ProgramContext.js";
 
 export const elysia = ts.createPackage({
   name: "elysia",
@@ -14,18 +16,26 @@ export const elysia = ts.createPackage({
   },
 });
 
-export const ElysiaOutput = ({ services }: { services: HttpService[] }) => {
+export const ElysiaOutput = ({
+  services,
+  program,
+}: {
+  services: HttpService[];
+  program: Program;
+}) => {
   return (
-    <Output externals={[elysia]}>
-      <ts.SourceFile path="models.ts">
-        {"import {t} from 'elysia'\n"}
-        <Enums services={services} />
-        <Models services={services} />
-      </ts.SourceFile>
-      <ts.SourceFile path="server.ts">
-        {"import {Elysia, Static} from 'elsyia';"}
-        {"import * as models from './models';"}
-      </ts.SourceFile>
-    </Output>
+    <ProgramProvider program={program}>
+      <Output externals={[elysia]}>
+        <ts.SourceFile path="models.ts">
+          {"import {t} from 'elysia'\n"}
+          <Enums services={services} />
+          <Models services={services} />
+        </ts.SourceFile>
+        <ts.SourceFile path="server.ts">
+          {"import {Elysia, Static} from 'elsyia';"}
+          {"import * as models from './models';"}
+        </ts.SourceFile>
+      </Output>
+    </ProgramProvider>
   );
 };

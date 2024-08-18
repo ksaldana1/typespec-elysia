@@ -1,7 +1,7 @@
 import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Enum } from "@typespec/compiler";
-import { HttpService } from "@typespec/http";
+import { type Enum } from "@typespec/compiler";
+import { type HttpService } from "@typespec/http";
 
 export const Enums = ({ services }: { services: HttpService[] }) => {
   return services

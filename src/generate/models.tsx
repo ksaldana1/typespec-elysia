@@ -1,7 +1,10 @@
 import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { type Model as ModelType, ModelProperty } from "@typespec/compiler";
-import { HttpService } from "@typespec/http";
+import {
+  type Model as ModelType,
+  type ModelProperty,
+} from "@typespec/compiler";
+import { type HttpService } from "@typespec/http";
 import { match } from "ts-pattern";
 
 export const Models = ({ services }: { services: HttpService[] }) => {

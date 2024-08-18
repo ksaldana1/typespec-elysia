@@ -5,6 +5,7 @@ import { Enums } from "./enums.js";
 import { Models } from "./models.js";
 import { type Program } from "@typespec/compiler";
 import { ProgramProvider } from "./context/ProgramContext.js";
+import { Definitions } from "./elysia.js";
 
 export const elysia = ts.createPackage({
   name: "elysia",
@@ -31,9 +32,10 @@ export const ElysiaOutput = ({
           <Enums services={services} />
           <Models services={services} />
         </ts.SourceFile>
-        <ts.SourceFile path="server.ts">
+        <ts.SourceFile path="service.ts">
           {"import {Elysia, Static} from 'elsyia';"}
-          {"import * as models from './models';"}
+          {"import * as models from './models';\n"}
+          <Definitions services={services} />
         </ts.SourceFile>
       </Output>
     </ProgramProvider>

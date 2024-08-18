@@ -33,7 +33,7 @@ const _db: Record<string, Static<typeof Pet>> = {
   },
 };
 
-export const server = new Elysia({ name: "Pet Store" })
+export default new Elysia({ name: "Pet Store" })
   .model({
     petType,
     Pet,

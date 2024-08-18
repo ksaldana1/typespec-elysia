@@ -1,6 +1,6 @@
 import { type PetService, type TodoService } from "./defs.js";
-import { server as petServer } from "./pets.js";
-import { server as todoServer } from "./todos.js";
+import petServer from "./pets.js";
+import todoServer from "./todos.js";
 import { Elysia } from "elysia";
 import { type UnionToIntersection } from "type-fest";
 import { cors } from "@elysiajs/cors";

@@ -22,7 +22,7 @@ const _db: Record<string, Static<typeof Todo>> = {
   },
 };
 
-export const server = new Elysia({ name: "Todo Store" })
+export default new Elysia({ name: "Todo Store" })
   .model({
     Todo,
     Todos,

@@ -1,23 +1,24 @@
-import { Enum, EnumMember } from "@typespec/compiler";
+import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { code, Output } from "@alloy-js/core";
-import { elysia } from "./index.js";
+import { Enum } from "@typespec/compiler";
+import { HttpService } from "@typespec/http";
 
-export const render = (e: Enum) => {
+export const Enums = ({ services }: { services: HttpService[] }) => {
+  return services
+    .map((service) => Array.from(service.namespace.enums.values()))
+    .flat()
+    .map((e) => (
+      <>
+        <EnumModel e={e} />
+        {"\n"}
+      </>
+    ));
+};
+
+export const EnumModel = ({ e }: { e: Enum }) => {
   return (
-    <Output externals={[elysia]}>
-      <ts.SourceFile path="models.ts">{renderEnum(e)}</ts.SourceFile>
-    </Output>
+    <ts.VarDeclaration export name={e.name}>
+      {code`t.Union([${Array.from(e.members.values()).map((m) => `t.Literal("${m.value}"),\n`)}])`}
+    </ts.VarDeclaration>
   );
-};
-
-export const renderEnum = (e: Enum) => {
-  return code`
-const ${e.name} = ${(<ts.Reference refkey={elysia.t} />)}.Union(${renderEnumMembers(Array.from(e.members.values()))})
-`;
-};
-
-const renderEnumMembers = (members: EnumMember[]) => {
-  return code`[
-${members.map((m) => `t.Literal(${m.value}),\n`)}]`;
 };

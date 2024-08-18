@@ -7,7 +7,7 @@ export async function $onEmit(context: EmitContext) {
   const [services, _diagnostics] = getAllHttpServices(context.program);
 
   const output = render(
-    <ElysiaOutput services={services} program={context.program} />
+    <ElysiaOutput services={services} program={context.program} />,
   );
 
   if (!context.program.compilerOptions.noEmit) {

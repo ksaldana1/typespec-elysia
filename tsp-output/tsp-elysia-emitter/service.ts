@@ -1,6 +1,13 @@
 import { Elysia, Static } from "elsyia";
 import * as models from "./models";
 
-interface PetsModels {}
-
-interface TodosModels {}
+export type TodosRoutes = {
+  todos: {
+    get: {
+      listTodos: string;
+    };
+    getTodo: {
+      getTodo: string;
+    };
+  };
+};

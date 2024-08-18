@@ -1,15 +1,15 @@
-import { type PetServer, type TodoServer } from "./defs.js";
+import { type PetService, type TodoService } from "./defs.js";
 import { server as petServer } from "./pets.js";
 import { server as todoServer } from "./todos.js";
 import { Elysia } from "elysia";
 import { type UnionToIntersection } from "type-fest";
 import { cors } from "@elysiajs/cors";
-import { logger } from "@bogeychan/elysia-logger";
 import { treaty } from "@elysiajs/eden";
 
 export const app = new Elysia()
+  .use(cors())
   .use(petServer)
-  .use(todoServer) satisfies Gateway<[PetServer, TodoServer]>;
+  .use(todoServer) satisfies Gateway<[PetService, TodoService]>;
 
 type GatewaySchema<T extends Array<Elysia<any, any, any, any>>> = {
   [K in keyof T]: {
@@ -34,7 +34,7 @@ type Gateway<T extends Array<Elysia<any, any, any, any>>> = Elysia<
   Routes<T>
 >;
 
-export const client = treaty<Gateway<[PetServer, TodoServer]>>(
+export const client = treaty<Gateway<[PetService, TodoService]>>(
   "http://localhost:3000",
 );
 

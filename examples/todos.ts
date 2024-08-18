@@ -1,5 +1,5 @@
 import { Elysia, t, type Static } from "elysia";
-import { type TodoServer } from "./defs.js";
+import { type TodoService } from "./defs.js";
 
 const Todo = t.Object({
   id: t.Integer(),
@@ -36,4 +36,4 @@ export const server = new Elysia({ name: "Todo Store" })
       return error(404, "Not found");
     }
     return todo;
-  }) satisfies TodoServer;
+  }) satisfies TodoService;

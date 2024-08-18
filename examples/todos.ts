@@ -1,5 +1,5 @@
 import { Elysia, t, type Static } from "elysia";
-import { TodoServer } from "./defs";
+import { type TodoServer } from "./defs.js";
 
 const Todo = t.Object({
   id: t.Integer(),

@@ -1,15 +1,13 @@
-import { PetServer, TodoServer } from "./defs";
-import { server as petServer } from "./pets";
-import { server as todoServer } from "./todos";
+import { type PetServer, type TodoServer } from "./defs.js";
+import { server as petServer } from "./pets.js";
+import { server as todoServer } from "./todos.js";
 import { Elysia } from "elysia";
-import { UnionToIntersection } from "type-fest";
+import { type UnionToIntersection } from "type-fest";
 import { cors } from "@elysiajs/cors";
 import { logger } from "@bogeychan/elysia-logger";
 import { treaty } from "@elysiajs/eden";
 
 export const app = new Elysia()
-  .use(logger())
-  .use(cors())
   .use(petServer)
   .use(todoServer) satisfies Gateway<[PetServer, TodoServer]>;
 

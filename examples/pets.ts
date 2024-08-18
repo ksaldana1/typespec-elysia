@@ -1,9 +1,9 @@
-import { Elysia, t, Static } from "elysia";
-import { PetServer } from "./defs";
+import { Elysia, t, type Static } from "elysia";
+import { type PetServer } from "./defs.js";
 
 const petType = t.Union([
-  t.Literal("dog"),
   t.Literal("cat"),
+  t.Literal("dog"),
   t.Literal("fish"),
   t.Literal("bird"),
   t.Literal("reptile"),
@@ -41,15 +41,19 @@ export const server = new Elysia({ name: "Pet Store" })
   })
   .get(
     "/pets",
-    ({}) => {
+    ({ query }) => {
       return Object.values(_db);
     },
-    { query: t.Object({ filter: t.Optional(petType) }) }
+    { query: t.Object({ filter: t.Optional(petType) }) },
   )
-  .get("/pets/:petId", ({ params, error }) => {
-    const pet = _db[params.petId];
-    if (!pet) {
-      return error(404, "Not found");
-    }
-    return _db[params.petId];
-  }) satisfies PetServer;
+  .get(
+    "/pets/:petId",
+    ({ params, error }) => {
+      const pet = _db[params.petId];
+      if (!pet) {
+        return error(404, "Not found");
+      }
+      return pet;
+    },
+    {},
+  ) satisfies PetServer;

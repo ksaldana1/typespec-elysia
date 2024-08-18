@@ -1,7 +1,7 @@
-import { Elysia, Static } from "elysia";
-import { Todo } from "../tsp-output/tsp-elysia-emitter/models";
-import { SimplifyDeep } from "type-fest";
-import * as models from "../tsp-output/tsp-elysia-emitter/models";
+import { Elysia, type Static } from "elysia";
+import { Todo } from "../tsp-output/tsp-elysia-emitter/models.js";
+import { type SimplifyDeep } from "type-fest";
+import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
 export type Definition = {
   Todo: Static<typeof Todo>;
@@ -83,7 +83,7 @@ export type PetServer = Elysia<
     resolve: {};
   },
   {
-    type: PetDefinitions;
+    type: SimplifyDeep<PetDefinitions>;
     error: {};
   },
   {

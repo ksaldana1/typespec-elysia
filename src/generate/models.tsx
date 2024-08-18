@@ -58,8 +58,8 @@ const propertyTypeToValue = ({
   return match(property.type)
     .with({ kind: "Scalar", name: "int32" }, () => {
       const [minValue, maxValue] = [
-        getMinValue(program, property.type),
-        getMaxValue(program, property.type),
+        getMinValue(program, property),
+        getMaxValue(program, property),
       ];
 
       return `t.Number({
@@ -69,9 +69,12 @@ const propertyTypeToValue = ({
     })
     .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")
     .with({ kind: "Scalar", name: "string" }, () => {
+      if (property.name === "age") {
+        property;
+      }
       const [minLength, maxLength] = [
-        getMinLength(program, property.type),
-        getMaxLength(program, property.type),
+        getMinLength(program, property),
+        getMaxLength(program, property),
       ];
 
       return `t.String({

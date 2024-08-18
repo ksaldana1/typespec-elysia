@@ -18,5 +18,9 @@ export function ProgramProvider({
 }
 
 export const useProgramContext = () => {
-  return useContext(ProgramContext);
+  const program = useContext(ProgramContext);
+  if (!program) {
+    throw new Error("Missing ProgramProvider in component tree.");
+  }
+  return program;
 };

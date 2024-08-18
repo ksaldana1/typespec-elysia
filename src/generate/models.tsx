@@ -1,11 +1,17 @@
 import { code } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import {
-  type Model as ModelType,
   type ModelProperty,
+  type Model as ModelType,
+  type Program,
+  getMaxLength,
+  getMaxValue,
+  getMinLength,
+  getMinValue,
 } from "@typespec/compiler";
 import { type HttpService } from "@typespec/http";
 import { match } from "ts-pattern";
+import { useProgramContext } from "./context/ProgramContext.js";
 
 export const Models = ({ services }: { services: HttpService[] }) => {
   return services
@@ -20,6 +26,7 @@ export const Models = ({ services }: { services: HttpService[] }) => {
 };
 
 export const Model = ({ model }: { model: ModelType }) => {
+  const program = useProgramContext();
   return (
     <ts.VarDeclaration export name={model.name}>
       {code`t.Object(${(
@@ -29,7 +36,7 @@ export const Model = ({ model }: { model: ModelType }) => {
               <>
                 <ts.ObjectProperty
                   name={property.name}
-                  value={propertyTypeToValue({ property })}
+                  value={propertyTypeToValue({ property, program })}
                 />
                 ,
               </>
@@ -41,32 +48,38 @@ export const Model = ({ model }: { model: ModelType }) => {
   );
 };
 
-const propertyTypeToValue = ({ property }: { property: ModelProperty }) => {
+const propertyTypeToValue = ({
+  property,
+  program,
+}: {
+  property: ModelProperty;
+  program: Program;
+}) => {
   return match(property.type)
     .with({ kind: "Scalar", name: "int32" }, () => {
-      const [minDecorator, maxDecorator] = [
-        getNumericConstraints(property, "@minValue"),
-        getNumericConstraints(property, "@maxValue"),
+      const [minValue, maxValue] = [
+        getMinValue(program, property.type),
+        getMaxValue(program, property.type),
       ];
 
       return `t.Number({
-        ${minDecorator !== null ? `minimum: ${minDecorator},` : ""}
-        ${maxDecorator !== null ? `maximum: ${maxDecorator}` : ""}
+        ${minValue != null ? `minimum: ${minValue},` : ""}
+        ${maxValue != null ? `maximum: ${maxValue}` : ""}
       })`;
     })
     .with({ kind: "Scalar", name: "boolean" }, () => "t.Boolean()")
-    .with({ kind: "Scalar", name: "string" }, () => "t.String()")
+    .with({ kind: "Scalar", name: "string" }, () => {
+      const [minLength, maxLength] = [
+        getMinLength(program, property.type),
+        getMaxLength(program, property.type),
+      ];
+
+      return `t.String({
+        ${minLength != null ? `minLength: ${minLength},` : ""}
+        ${maxLength != null ? `maxLength: ${maxLength}` : ""}
+      })`;
+    })
     .with({ kind: "Number" }, ({ value }) => `t.Literal(${value})`)
     .with({ kind: "Enum" }, ({ name }) => name)
     .otherwise(() => "t.Number()");
-};
-
-const getDecorator = (property: ModelProperty, name: string) => {
-  return property.decorators.find((d) => d?.definition?.name === name);
-};
-
-const getNumericConstraints = (property: ModelProperty, name: string) => {
-  const decorator = getDecorator(property, name);
-  // @ts-expect-error
-  return decorator?.args.at(0)?.node.value ?? null;
 };

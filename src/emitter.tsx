@@ -8,15 +8,12 @@ export async function $onEmit(context: EmitContext) {
 
   const output = render(<ElysiaOutput services={services} />);
 
-  console.log(output);
-  console.log(context.emitterOutputDir);
-
-  console.log("path", resolvePath(context.emitterOutputDir, output.path));
-
   if (!context.program.compilerOptions.noEmit) {
-    await emitFile(context.program, {
-      path: resolvePath(context.emitterOutputDir, output.contents.at(0)?.path),
-      content: output.contents.at(0)?.contents.toString() ?? "",
-    });
+    for (const file of output.contents) {
+      await emitFile(context.program, {
+        path: resolvePath(context.emitterOutputDir, file.path),
+        content: file.contents.toString(),
+      });
+    }
   }
 }

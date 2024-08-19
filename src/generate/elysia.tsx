@@ -7,7 +7,7 @@ import {
 } from "@typespec/http";
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 
 export const Definitions = ({ services }: { services: HttpService[] }) => {
   return services
@@ -161,11 +161,19 @@ const Responses = ({ responses }: { responses: HttpOperationResponse[] }) => {
       return acc;
     }
     const t = match(resp.body?.type)
-      .with({ kind: "Model", name: "Array" }, () => {
+      .with({ kind: "Model", name: "Array" }, (type) => {
         // @ts-expect-error probably a better way
-        return `readonly ${response.statusCodes}: Array<Static<typeof models.${resp?.body?.type.indexer?.value.name}>>;`;
+        return `readonly ${response.statusCodes}: Array<Static<typeof models.${type.indexer?.value.name}>>;`;
       })
-      .otherwise(() => `readonly ${response.statusCodes}: unknown;`);
+      .with({ kind: "Model", name: P.not("Array") }, (type) => {
+        return `readonly ${response.statusCodes}: Static<typeof models.${type.name}>;`;
+      })
+      .with({ kind: "Scalar" }, (type) => {
+        return `readonly ${response.statusCodes}: ${type.name === "string" ? type.name : "number"};`;
+      })
+      .otherwise(() => {
+        return `readonly ${response.statusCodes}: unknown;`;
+      });
     return (acc += t);
   }, "");
   return (

@@ -15,26 +15,10 @@ export type PetsRoutes = {
       params: { petId: string };
       query: unknown;
       headers: unknown;
-      response: { readonly 200: unknown; readonly 404: unknown };
-    };
-  };
-};
-
-export type TodosRoutes = {
-  todos: {
-    get: {
-      body: unknown;
-      params: {};
-      query: unknown;
-      headers: unknown;
-      response: { readonly 200: Array<Static<typeof models.Todo>> };
-    };
-    testing: {
-      body: unknown;
-      params: { todoId: string };
-      query: unknown;
-      headers: unknown;
-      response: { readonly 200: unknown; readonly 404: unknown };
+      response: {
+        readonly 200: Static<typeof models.Pet>;
+        readonly 404: string;
+      };
     };
   };
 };

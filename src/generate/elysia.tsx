@@ -25,7 +25,7 @@ export const Definitions = ({ services }: { services: HttpService[] }) => {
     ));
 };
 
-export const Definition = ({ operation }: { operation: HttpOperation }) => {
+const Definition = ({ operation }: { operation: HttpOperation }) => {
   const program = useProgramContext();
   const [responses, _diagnostics] = getResponsesForOperation(
     program,
@@ -78,7 +78,7 @@ export const Routes = ({ services }: { services: HttpService[] }) => {
     });
 };
 
-export const Route = ({ operation }: { operation: HttpOperation }) => {
+const Route = ({ operation }: { operation: HttpOperation }) => {
   const name =
     operation.path.split("/").filter((v) => Boolean(v))?.length === 1
       ? operation.verb
@@ -99,13 +99,9 @@ export const Route = ({ operation }: { operation: HttpOperation }) => {
   );
 };
 
-export const RouteTypes = ({
-  httpOperation,
-}: {
-  httpOperation: HttpOperation;
-}) => {
+const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
   const program = useProgramContext();
-  const [responses, _diagnostics] = getResponsesForOperation(
+  const [_responses, _diagnostics] = getResponsesForOperation(
     program,
     httpOperation.operation,
   );
@@ -130,25 +126,27 @@ export const RouteTypes = ({
 };
 
 const Path = ({ properties }: { properties?: HttpProperty[] }) => {
-  const type = properties?.reduce((acc, curr) => {
-    return (acc += `${curr.property.name}: string\n`);
-  }, "");
+  const type =
+    properties?.reduce((acc, curr) => {
+      return (acc += `${curr.property.name}: string\n`);
+    }, "") ?? "unknown";
   return <ts.InterfaceMember name="params" type={`{ ${type} }`} />;
 };
 
 const Query = ({ properties }: { properties?: HttpProperty[] }) => {
-  const type = properties?.reduce((acc, property) => {
-    return (acc += match(property?.property.type.kind)
-      .with("Enum", () => {
-        if (property?.property.type.kind === "Enum") {
-          return `${property?.property.name}: Static<typeof models.${property?.property.type.name}>;`;
-        }
-      })
-      .with("Scalar", () => {
-        return `${property?.property.name}: string; `;
-      })
-      .otherwise(() => "unknown"));
-  }, "");
+  const type =
+    properties?.reduce((acc, property) => {
+      return (acc += match(property?.property.type.kind)
+        .with("Enum", () => {
+          if (property?.property.type.kind === "Enum") {
+            return `${property?.property.name}: Static<typeof models.${property?.property.type.name}>;`;
+          }
+        })
+        .with("Scalar", () => {
+          return `${property?.property.name}: string; `;
+        })
+        .otherwise(() => "unknown"));
+    }, "") ?? "unknown";
 
   return <ts.InterfaceMember name="query" type={`{ ${type} }`} />;
 };

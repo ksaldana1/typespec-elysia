@@ -34,7 +34,7 @@ enum petType {
 @route("/pets")
 namespace Pets {
   @get
-  op listPets(@query filter?: petType, @query test?: string): {
+  op listPets(@query filter?: petType): {
     @body pets: Pet[];
   };
 

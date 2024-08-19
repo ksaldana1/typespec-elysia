@@ -6,18 +6,20 @@ export type PetsRoutes = {
     get: {
       body: unknown;
       params: {};
-      query: { filter: Static<typeof models.petType>; after: string };
+      query: { filter: Static<typeof models.petType> };
       headers: unknown;
       response: { readonly 200: Array<Static<typeof models.Pet>> };
     };
-    testing: {
-      body: unknown;
-      params: { petId: string };
-      query: unknown;
-      headers: unknown;
-      response: {
-        readonly 200: Static<typeof models.Pet>;
-        readonly 404: string;
+    ":petId": {
+      get: {
+        body: unknown;
+        params: { petId: string };
+        query: unknown;
+        headers: unknown;
+        response: {
+          readonly 200: Static<typeof models.Pet>;
+          readonly 404: string;
+        };
       };
     };
   };

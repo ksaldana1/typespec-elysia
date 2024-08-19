@@ -79,24 +79,41 @@ export const Routes = ({ services }: { services: HttpService[] }) => {
 };
 
 const Route = ({ operation }: { operation: HttpOperation }) => {
-  const name =
-    operation.path.split("/").filter((v) => Boolean(v))?.length === 1
-      ? operation.verb
-      : operation.operation.name;
+  function _route(path: string) {
+    const [_basePath, ...rest] = path.split("/").filter((v) => Boolean(v));
 
-  return (
-    <>
-      <ts.InterfaceMember
-        name={name === operation.verb ? name : "testing"}
-        type={
-          <ts.InterfaceExpression>
-            <RouteTypes httpOperation={operation} />
-          </ts.InterfaceExpression>
-        }
-      />
-      {";"}
-    </>
-  );
+    if (rest.length === 0) {
+      return (
+        <>
+          <ts.InterfaceMember
+            name={operation.verb}
+            type={
+              <ts.InterfaceExpression>
+                <RouteTypes httpOperation={operation} />
+              </ts.InterfaceExpression>
+            }
+          />
+          {";"}
+        </>
+      );
+    } else {
+      return (
+        <>
+          <ts.InterfaceMember
+            name={`":${rest.at(0)?.replaceAll(/[{}]/g, "")}"`}
+            type={
+              <ts.InterfaceExpression>
+                {_route(rest.join("/"))}
+              </ts.InterfaceExpression>
+            }
+          />
+          {";"}
+        </>
+      );
+    }
+  }
+
+  return _route(operation.path);
 };
 
 const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {

@@ -33,7 +33,7 @@ export const ElysiaOutput = ({
           <Models services={services} />
         </ts.SourceFile>
         <ts.SourceFile path="service.ts">
-          {"import {Elysia, Static} from 'elsyia';"}
+          {"import {Elysia, Static} from 'elysia';"}
           {"import * as models from './models.js';\n"}
           <Routes services={services} />
         </ts.SourceFile>

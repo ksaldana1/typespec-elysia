@@ -72,7 +72,7 @@ export type TodoRoutes = {
 
 export type TodoService = Service<TodoModels, TodoRoutes>;
 
-type PetModels = {
+export type PetModels = {
   petType: Static<typeof models.petType>;
   Pet: Static<typeof models.Pet>;
   Pets: Array<Static<typeof models.Pet>>;

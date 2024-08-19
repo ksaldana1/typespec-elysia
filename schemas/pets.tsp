@@ -45,10 +45,5 @@ namespace Pets {
     @body error: string;
     @statusCode statusCode: 404;
   };
-
-  @route("/type")
-  @get
-  op listPetTypes(@path type: petType): {
-    @body pets: Pet[];
-  };
 }
+

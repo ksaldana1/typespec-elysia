@@ -1,4 +1,4 @@
-import { Elysia, Static } from "elsyia";
+import { Elysia, Static } from "elysia";
 import * as models from "./models.js";
 
 export type PetsRoutes = {
@@ -19,17 +19,6 @@ export type PetsRoutes = {
         response: {
           readonly 200: Static<typeof models.Pet>;
           readonly 404: string;
-        };
-      };
-    };
-    type: {
-      ":type": {
-        get: {
-          body: unknown;
-          params: { type: string };
-          query: unknown;
-          headers: unknown;
-          response: { readonly 200: Array<Static<typeof models.Pet>> };
         };
       };
     };

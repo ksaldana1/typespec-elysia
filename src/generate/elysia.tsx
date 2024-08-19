@@ -8,6 +8,7 @@ import {
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
 import { match, P } from "ts-pattern";
+import { PromiseGroup } from "elysia/utils";
 
 export const Definitions = ({ services }: { services: HttpService[] }) => {
   return services
@@ -97,10 +98,14 @@ const Route = ({ operation }: { operation: HttpOperation }) => {
         </>
       );
     } else {
+      const propertyName =
+        rest?.at(0)?.at(-1) === "}"
+          ? `":${rest.at(0)?.replaceAll(/[{}]/g, "")}"`
+          : rest.at(0);
       return (
         <>
           <ts.InterfaceMember
-            name={`":${rest.at(0)?.replaceAll(/[{}]/g, "")}"`}
+            name={propertyName}
             type={
               <ts.InterfaceExpression>
                 {_route(rest.join("/"))}

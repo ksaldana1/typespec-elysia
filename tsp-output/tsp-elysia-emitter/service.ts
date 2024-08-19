@@ -22,5 +22,16 @@ export type PetsRoutes = {
         };
       };
     };
+    type: {
+      ":type": {
+        get: {
+          body: unknown;
+          params: { type: string };
+          query: unknown;
+          headers: unknown;
+          response: { readonly 200: Array<Static<typeof models.Pet>> };
+        };
+      };
+    };
   };
 };

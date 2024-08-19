@@ -4,16 +4,16 @@ import * as models from "./models.js";
 export type PetsRoutes = {
   pets: {
     get: {
-      body: unknown;
+      body: { readonly 200: unknown };
       params: {};
-      query: { filter: Static<typeof models.petType>; test: string };
+      query: { filter: Static<typeof models.petType> };
       headers: unknown;
       response: unknown;
     };
     testing: {
-      body: unknown;
+      body: { readonly 200: unknown; readonly 404: unknown };
       params: { petId: string };
-      query: {};
+      query: unknown;
       headers: unknown;
       response: unknown;
     };

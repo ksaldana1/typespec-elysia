@@ -3,6 +3,7 @@ import {
   type HttpOperation,
   getResponsesForOperation,
   HttpProperty,
+  HttpOperationResponse,
 } from "@typespec/http";
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
@@ -31,7 +32,6 @@ const Definition = ({ operation }: { operation: HttpOperation }) => {
     program,
     operation.operation,
   );
-  console.log(responses);
   return null;
 };
 
@@ -101,7 +101,7 @@ const Route = ({ operation }: { operation: HttpOperation }) => {
 
 const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
   const program = useProgramContext();
-  const [_responses, _diagnostics] = getResponsesForOperation(
+  const [responses, _diagnostics] = getResponsesForOperation(
     program,
     httpOperation.operation,
   );
@@ -116,7 +116,7 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
 
   return (
     <>
-      <ts.InterfaceMember name="body" type="unknown" />
+      <Body responses={responses} />
       <Path properties={pathParams} />
       <Query properties={queryParams} />
       <ts.InterfaceMember name="headers" type="unknown" />
@@ -134,19 +134,32 @@ const Path = ({ properties }: { properties?: HttpProperty[] }) => {
 };
 
 const Query = ({ properties }: { properties?: HttpProperty[] }) => {
-  const type =
-    properties?.reduce((acc, property) => {
-      return (acc += match(property?.property.type.kind)
-        .with("Enum", () => {
-          if (property?.property.type.kind === "Enum") {
-            return `${property?.property.name}: Static<typeof models.${property?.property.type.name}>;`;
-          }
-        })
-        .with("Scalar", () => {
-          return `${property?.property.name}: string; `;
-        })
-        .otherwise(() => "unknown"));
-    }, "") ?? "unknown";
+  const type = properties?.reduce((acc, property) => {
+    return (acc += match(property?.property.type.kind)
+      .with("Enum", () => {
+        if (property?.property.type.kind === "Enum") {
+          return `${property?.property.name}: Static<typeof models.${property?.property.type.name}>;`;
+        }
+      })
+      .with("Scalar", () => {
+        return `${property?.property.name}: string; `;
+      })
+      .otherwise(() => "unknown"));
+  }, "");
 
-  return <ts.InterfaceMember name="query" type={`{ ${type} }`} />;
+  return (
+    <ts.InterfaceMember name="query" type={type ? `{ ${type} }` : "unknown"} />
+  );
+};
+
+const Body = ({ responses }: { responses: HttpOperationResponse[] }) => {
+  // responses is an array of each endpoint
+  // responses.responses is the array of each endpoint
+  const type = responses?.reduce((acc, response) => {
+    console.log(response.responses);
+    return (acc += `readonly ${response.statusCodes}: unknown;`);
+  }, "");
+  return (
+    <ts.InterfaceMember name="body" type={type ? `{ ${type} }` : "unknown"} />
+  );
 };

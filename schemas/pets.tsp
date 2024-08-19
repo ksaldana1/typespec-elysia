@@ -46,4 +46,3 @@ namespace Pets {
     @statusCode statusCode: 404;
   };
 }
-

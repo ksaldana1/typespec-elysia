@@ -1,12 +1,12 @@
 import { Elysia, Static } from "elsyia";
-import * as models from "./models";
+import * as models from "./models.js";
 
-export type TodosRoutes = {
-  todos: {
+export type PetsRoutes = {
+  pets: {
     get: {
       body: unknown;
       params: {};
-      query: unknown;
+      query: { filter: Static<typeof models.petType> };
       headers: unknown;
       response: unknown;
     };
@@ -19,5 +19,3 @@ export type TodosRoutes = {
     };
   };
 };
-
-interface TodosModels {}

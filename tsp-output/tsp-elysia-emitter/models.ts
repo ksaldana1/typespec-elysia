@@ -1,14 +1,21 @@
 import { t } from "elysia";
 
-export const Todo = t.Object({
+export const petType = t.Union([
+  t.Literal("dog"),
+  t.Literal("cat"),
+  t.Literal("fish"),
+  t.Literal("bird"),
+  t.Literal("reptile"),
+]);
+
+export const Pet = t.Object({
   id: t.Number({}),
-  text: t.String({
+  name: t.String({
     minLength: 1,
   }),
-  completed: t.Boolean(),
-});
-
-export const NotFoundError = t.Object({
-  code: t.Literal(404),
-  message: t.String({}),
+  age: t.Number({
+    minimum: 0,
+    maximum: 100,
+  }),
+  kind: petType,
 });

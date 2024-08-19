@@ -34,9 +34,8 @@ export const ElysiaOutput = ({
         </ts.SourceFile>
         <ts.SourceFile path="service.ts">
           {"import {Elysia, Static} from 'elsyia';"}
-          {"import * as models from './models';\n"}
+          {"import * as models from './models.js';\n"}
           <Routes services={services} />
-          <Definitions services={services} />
         </ts.SourceFile>
       </Output>
     </ProgramProvider>

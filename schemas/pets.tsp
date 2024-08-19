@@ -34,7 +34,7 @@ enum petType {
 @route("/pets")
 namespace Pets {
   @get
-  op listPets(@query filter: petType): {
+  op listPets(@query filter?: petType): {
     @body pets: Pet[];
   };
 
@@ -42,13 +42,8 @@ namespace Pets {
   op getPet(@path petId: int32): {
     @body pet: Pet;
   } | {
-    @body error: NotFoundError;
+    @body error: string;
+    @statusCode statusCode: 404;
   };
-}
-
-@error
-model NotFoundError {
-  code: 404;
-  message: string;
 }
 

@@ -2,9 +2,11 @@ import {
   type HttpService,
   type HttpOperation,
   getResponsesForOperation,
+  HttpProperty,
 } from "@typespec/http";
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
+import { match } from "ts-pattern";
 
 export const Definitions = ({ services }: { services: HttpService[] }) => {
   return services
@@ -88,7 +90,7 @@ export const Route = ({ operation }: { operation: HttpOperation }) => {
         name={name === operation.verb ? name : "testing"}
         type={
           <ts.InterfaceExpression>
-            <RouteTypes operation={operation} />
+            <RouteTypes httpOperation={operation} />
           </ts.InterfaceExpression>
         }
       />
@@ -97,14 +99,43 @@ export const Route = ({ operation }: { operation: HttpOperation }) => {
   );
 };
 
-export const RouteTypes = ({ operation }: { operation: HttpOperation }) => {
+export const RouteTypes = ({
+  httpOperation,
+}: {
+  httpOperation: HttpOperation;
+}) => {
+  const program = useProgramContext();
+  const [responses, _diagnostics] = getResponsesForOperation(
+    program,
+    httpOperation.operation,
+  );
+
+  const queryParams = httpOperation.parameters.properties.find(
+    (p) => p.kind === "query",
+  );
+
   return (
     <>
       <ts.InterfaceMember name="body" type="unknown" />
       <ts.InterfaceMember name="params" type="{}" />
-      <ts.InterfaceMember name="query" type="unknown" />
+      <Query property={queryParams} />
       <ts.InterfaceMember name="headers" type="unknown" />
       <ts.InterfaceMember name="response" type="unknown" />
     </>
   );
+};
+
+const Query = ({ property }: { property?: HttpProperty }) => {
+  const type = match(property?.property.type.kind)
+    .with("Enum", () => {
+      if (property?.property.type.kind === "Enum") {
+        return `{ ${property?.property.name}: Static<typeof models.${property?.property.type.name}>}`;
+      }
+    })
+    .with("Scalar", () => {
+      return `{ ${property?.property.name}: string }`;
+    })
+    .otherwise(() => "unknown");
+
+  return <ts.InterfaceMember name="query" type={type} />;
 };

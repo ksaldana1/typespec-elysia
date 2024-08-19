@@ -30,13 +30,7 @@ namespace Todos {
   op getTodo(@path todoId: int32): {
     @body todo: Todo;
   } | {
-    @body error: NotFoundError;
+    @body error: string;
+    @statusCode statusCode: 404;
   };
 }
-
-@error
-model NotFoundError {
-  code: 404;
-  message: string;
-}
-

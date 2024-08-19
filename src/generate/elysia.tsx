@@ -116,11 +116,11 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
 
   return (
     <>
-      <Body responses={responses} />
+      <ts.InterfaceMember name="body" type="unknown" />
       <Path properties={pathParams} />
       <Query properties={queryParams} />
       <ts.InterfaceMember name="headers" type="unknown" />
-      <ts.InterfaceMember name="response" type="unknown" />
+      <Responses responses={responses} />
     </>
   );
 };
@@ -152,14 +152,26 @@ const Query = ({ properties }: { properties?: HttpProperty[] }) => {
   );
 };
 
-const Body = ({ responses }: { responses: HttpOperationResponse[] }) => {
+const Responses = ({ responses }: { responses: HttpOperationResponse[] }) => {
   // responses is an array of each endpoint
   // responses.responses is the array of each endpoint
   const type = responses?.reduce((acc, response) => {
-    console.log(response.responses);
-    return (acc += `readonly ${response.statusCodes}: unknown;`);
+    const resp = response.responses.at(0);
+    if (!resp) {
+      return acc;
+    }
+    const t = match(resp.body?.type)
+      .with({ kind: "Model", name: "Array" }, () => {
+        // @ts-expect-error probably a better way
+        return `readonly ${response.statusCodes}: Array<Static<typeof models.${resp?.body?.type.indexer?.value.name}>>;`;
+      })
+      .otherwise(() => `readonly ${response.statusCodes}: unknown;`);
+    return (acc += t);
   }, "");
   return (
-    <ts.InterfaceMember name="body" type={type ? `{ ${type} }` : "unknown"} />
+    <ts.InterfaceMember
+      name="response"
+      type={type ? `{ ${type} }` : "unknown"}
+    />
   );
 };

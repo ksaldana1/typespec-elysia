@@ -19,3 +19,11 @@ export const Pet = t.Object({
   }),
   kind: petType,
 });
+
+export const Todo = t.Object({
+  id: t.Number({}),
+  text: t.String({
+    minLength: 1,
+  }),
+  completed: t.Boolean(),
+});

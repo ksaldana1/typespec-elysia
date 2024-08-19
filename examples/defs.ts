@@ -4,7 +4,6 @@ import {
   type RouteBase,
   type Static,
 } from "elysia";
-import { Todo } from "../tsp-output/tsp-elysia-emitter/models.js";
 import { type SimplifyDeep } from "type-fest";
 import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
@@ -39,8 +38,8 @@ export type Service<
 >;
 
 export type TodoModels = {
-  Todo: Static<typeof Todo>;
-  Todos: Array<Static<typeof Todo>>;
+  Todo: Static<typeof models.Todo>;
+  Todos: Array<Static<typeof models.Todo>>;
 };
 
 export type TodoRoutes = {

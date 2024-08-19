@@ -6,14 +6,14 @@ export type PetsRoutes = {
     get: {
       body: unknown;
       params: {};
-      query: { filter: Static<typeof models.petType> };
+      query: { filter: Static<typeof models.petType>; test: string };
       headers: unknown;
       response: unknown;
     };
     testing: {
       body: unknown;
       params: { petId: string };
-      query: unknown;
+      query: {};
       headers: unknown;
       response: unknown;
     };

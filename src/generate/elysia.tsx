@@ -110,7 +110,7 @@ export const RouteTypes = ({
     httpOperation.operation,
   );
 
-  const queryParams = httpOperation.parameters.properties.find(
+  const queryParams = httpOperation.parameters.properties.filter(
     (p) => p.kind === "query",
   );
 
@@ -122,7 +122,7 @@ export const RouteTypes = ({
     <>
       <ts.InterfaceMember name="body" type="unknown" />
       <Path properties={pathParams} />
-      <Query property={queryParams} />
+      <Query properties={queryParams} />
       <ts.InterfaceMember name="headers" type="unknown" />
       <ts.InterfaceMember name="response" type="unknown" />
     </>
@@ -130,25 +130,25 @@ export const RouteTypes = ({
 };
 
 const Path = ({ properties }: { properties?: HttpProperty[] }) => {
-  console.log("properties", properties);
   const type = properties?.reduce((acc, curr) => {
     return (acc += `${curr.property.name}: string\n`);
   }, "");
-  console.log(type);
   return <ts.InterfaceMember name="params" type={`{ ${type} }`} />;
 };
 
-const Query = ({ property }: { property?: HttpProperty }) => {
-  const type = match(property?.property.type.kind)
-    .with("Enum", () => {
-      if (property?.property.type.kind === "Enum") {
-        return `{ ${property?.property.name}: Static<typeof models.${property?.property.type.name}>}`;
-      }
-    })
-    .with("Scalar", () => {
-      return `{ ${property?.property.name}: string }`;
-    })
-    .otherwise(() => "unknown");
+const Query = ({ properties }: { properties?: HttpProperty[] }) => {
+  const type = properties?.reduce((acc, property) => {
+    return (acc += match(property?.property.type.kind)
+      .with("Enum", () => {
+        if (property?.property.type.kind === "Enum") {
+          return `${property?.property.name}: Static<typeof models.${property?.property.type.name}>;`;
+        }
+      })
+      .with("Scalar", () => {
+        return `${property?.property.name}: string; `;
+      })
+      .otherwise(() => "unknown"));
+  }, "");
 
-  return <ts.InterfaceMember name="query" type={type} />;
+  return <ts.InterfaceMember name="query" type={`{ ${type} }`} />;
 };

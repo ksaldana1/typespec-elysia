@@ -12,7 +12,7 @@ export type PetsRoutes = {
     };
     testing: {
       body: unknown;
-      params: {};
+      params: { petId: string };
       query: unknown;
       headers: unknown;
       response: unknown;

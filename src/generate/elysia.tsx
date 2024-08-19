@@ -114,15 +114,28 @@ export const RouteTypes = ({
     (p) => p.kind === "query",
   );
 
+  const pathParams = httpOperation.parameters.properties.filter(
+    (p) => p.kind === "path",
+  );
+
   return (
     <>
       <ts.InterfaceMember name="body" type="unknown" />
-      <ts.InterfaceMember name="params" type="{}" />
+      <Path properties={pathParams} />
       <Query property={queryParams} />
       <ts.InterfaceMember name="headers" type="unknown" />
       <ts.InterfaceMember name="response" type="unknown" />
     </>
   );
+};
+
+const Path = ({ properties }: { properties?: HttpProperty[] }) => {
+  console.log("properties", properties);
+  const type = properties?.reduce((acc, curr) => {
+    return (acc += `${curr.property.name}: string\n`);
+  }, "");
+  console.log(type);
+  return <ts.InterfaceMember name="params" type={`{ ${type} }`} />;
 };
 
 const Query = ({ property }: { property?: HttpProperty }) => {

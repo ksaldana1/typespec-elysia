@@ -1,5 +1,10 @@
-import { type HttpService, type HttpOperation } from "@typespec/http";
+import {
+  type HttpService,
+  type HttpOperation,
+  getResponsesForOperation,
+} from "@typespec/http";
 import * as ts from "@alloy-js/typescript";
+import { useProgramContext } from "./context/ProgramContext.js";
 
 export const Definitions = ({ services }: { services: HttpService[] }) => {
   return services
@@ -19,7 +24,12 @@ export const Definitions = ({ services }: { services: HttpService[] }) => {
 };
 
 export const Definition = ({ operation }: { operation: HttpOperation }) => {
-  console.log(operation.responses.at(0)?.responses);
+  const program = useProgramContext();
+  const [responses, _diagnostics] = getResponsesForOperation(
+    program,
+    operation.operation,
+  );
+  console.log(responses);
   return null;
 };
 

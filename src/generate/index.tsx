@@ -5,7 +5,7 @@ import { Enums } from "./enums.js";
 import { Models } from "./models.js";
 import { type Program } from "@typespec/compiler";
 import { ProgramProvider } from "./context/ProgramContext.js";
-import { Routes } from "./elysia.js";
+import { Definitions, Routes } from "./elysia.js";
 
 export const elysia = ts.createPackage({
   name: "elysia",
@@ -24,7 +24,6 @@ export const ElysiaOutput = ({
   services: HttpService[];
   program: Program;
 }) => {
-  console.log("output called");
   return (
     <ProgramProvider program={program}>
       <Output externals={[elysia]}>
@@ -37,6 +36,7 @@ export const ElysiaOutput = ({
           {"import {Elysia, Static} from 'elsyia';"}
           {"import * as models from './models';\n"}
           <Routes services={services} />
+          <Definitions services={services} />
         </ts.SourceFile>
       </Output>
     </ProgramProvider>

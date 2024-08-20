@@ -47,8 +47,9 @@ namespace Pets {
   };
 
   @post
-  op createPet(@body pet: Pet): {
+  op createPet(@body pet: Pet, @header requestId: string): {
     @statusCode statusCode: 201;
     @body newPet: Pet;
   };
 }
+

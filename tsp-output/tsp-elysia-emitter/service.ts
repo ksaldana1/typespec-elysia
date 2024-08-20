@@ -7,7 +7,7 @@ export type PetsRoutes = {
       body: unknown;
       params: {};
       query: { filter: Static<typeof models.petType> };
-      headers: unknown;
+      headers: {};
       response: { readonly 200: Array<Static<typeof models.Pet>> };
     };
     ":petId": {
@@ -15,7 +15,7 @@ export type PetsRoutes = {
         body: unknown;
         params: { petId: string };
         query: unknown;
-        headers: unknown;
+        headers: {};
         response: {
           readonly 200: Static<typeof models.Pet>;
           readonly 404: string;
@@ -26,7 +26,7 @@ export type PetsRoutes = {
       body: { pet: Static<typeof models.Pet> };
       params: {};
       query: unknown;
-      headers: unknown;
+      headers: { "request-id": string };
       response: { readonly 201: Static<typeof models.Pet> };
     };
   };

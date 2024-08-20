@@ -1,9 +1,9 @@
 import {
   type HttpService,
   type HttpOperation,
+  type HttpProperty,
+  type HttpOperationResponse,
   getResponsesForOperation,
-  HttpProperty,
-  HttpOperationResponse,
 } from "@typespec/http";
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
@@ -100,8 +100,9 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
     program,
     httpOperation.operation,
   );
+  //console.log(httpOperation.parameters.properties);
 
-  const { query, path, body } = Object.groupBy(
+  const { query, path, body, header } = Object.groupBy(
     httpOperation.parameters.properties,
     (property) => property.kind,
   );
@@ -111,7 +112,7 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
       <Body properties={body} />
       <Path properties={path} />
       <Query properties={query} />
-      <ts.InterfaceMember name="headers" type="unknown" />
+      <Headers properties={header} />
       <Responses responses={responses} />
     </>
   );
@@ -119,7 +120,6 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
 
 const Body = ({ properties }: { properties?: HttpProperty[] }) => {
   const type = properties?.reduce((acc, property) => {
-    console.log(property);
     const t = match(property.property.type)
       .with({ kind: "Model", name: "Array" }, (type) => {
         // @ts-expect-error probably a better way
@@ -148,6 +148,19 @@ const Path = ({ properties }: { properties?: HttpProperty[] }) => {
   }, "");
   return (
     <ts.InterfaceMember name="params" type={type ? `{ ${type} }` : `{}`} />
+  );
+};
+
+const Headers = ({ properties }: { properties?: HttpProperty[] }) => {
+  const type = properties?.reduce((acc, curr) => {
+    if (curr.kind === "header") {
+      return (acc += `"${curr.options.name}": string\n`);
+    } else {
+      return acc;
+    }
+  }, "");
+  return (
+    <ts.InterfaceMember name="headers" type={type ? `{ ${type} }` : `{}`} />
   );
 };
 

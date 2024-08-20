@@ -159,7 +159,10 @@ const Headers = ({ properties }: { properties?: HttpProperty[] }) => {
     }
   }, "");
   return (
-    <ts.InterfaceMember name="headers" type={type ? `{ ${type} }` : `{}`} />
+    <ts.InterfaceMember
+      name="headers"
+      type={type ? `{ ${type} }` : `unknown`}
+    />
   );
 };
 
@@ -212,30 +215,4 @@ const Responses = ({ responses }: { responses: HttpOperationResponse[] }) => {
       type={type ? `{ ${type} }` : "unknown"}
     />
   );
-};
-
-export const Definitions = ({ services }: { services: HttpService[] }) => {
-  return services
-    .map((service) => Array.from(service.operations.values()))
-    .map((operations) => (
-      <>
-        <ts.InterfaceDeclaration
-          name={`${operations.at(0)?.container.name}Models`}
-        >
-          {operations.map((operation) => (
-            <Definition operation={operation} />
-          ))}
-        </ts.InterfaceDeclaration>
-        {"\n"}
-      </>
-    ));
-};
-
-const Definition = ({ operation }: { operation: HttpOperation }) => {
-  const program = useProgramContext();
-  const [responses, _diagnostics] = getResponsesForOperation(
-    program,
-    operation.operation,
-  );
-  return null;
 };

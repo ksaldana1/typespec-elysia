@@ -52,4 +52,3 @@ namespace Pets {
     @body newPet: Pet;
   };
 }
-

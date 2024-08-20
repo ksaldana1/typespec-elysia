@@ -1,5 +1,7 @@
 import { Elysia, t, type Static } from "elysia";
-import { PetService } from "./defs.js";
+import { PetsRoutes } from "../tsp-output/tsp-elysia-emitter/service.js";
+import { Service } from "./defs.js";
+import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
 const petType = t.Union([
   t.Literal("cat"),
@@ -44,16 +46,19 @@ export default new Elysia({ name: "Pet Store" })
     ({}) => {
       return Object.values(_db);
     },
-    { query: t.Object({ filter: t.Optional(petType) }) },
+    { query: t.Object({ filter: petType }) },
   )
-  .get(
-    "/pets/:petId",
-    ({ params, error }) => {
-      const pet = _db[params.petId];
-      if (!pet) {
-        return error(404, "Not found");
-      }
-      return pet;
+  .get("/pets/:petId", ({ params, error }) => {
+    const pet = _db[params.petId];
+    if (!pet) {
+      return error(404, "Not found");
+    }
+    return pet;
+  })
+  .post(
+    "/pets",
+    ({ body }) => {
+      return body.pet;
     },
-    {},
-  ) satisfies PetService;
+    { body: t.Object({ pet: models.Pet }) },
+  ) satisfies Service<PetsRoutes>;

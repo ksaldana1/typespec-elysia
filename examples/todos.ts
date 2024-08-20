@@ -1,6 +1,6 @@
 import { Elysia, t, type Static } from "elysia";
-import { TodoService } from "./defs.js";
-
+import { TodosRoutes } from "../tsp-output/tsp-elysia-emitter/service.js";
+import { Service } from "./defs.js";
 const Todo = t.Object({
   id: t.Integer(),
   text: t.String({ minLength: 1 }),
@@ -36,4 +36,4 @@ export default new Elysia({ name: "Todo Store" })
       return error(404, "Not found");
     }
     return todo;
-  }) satisfies TodoService;
+  }) satisfies Service<TodosRoutes>;

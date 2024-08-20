@@ -31,3 +31,27 @@ export type PetsRoutes = {
     };
   };
 };
+
+export type TodosRoutes = {
+  todos: {
+    get: {
+      body: unknown;
+      params: {};
+      query: unknown;
+      headers: {};
+      response: { readonly 200: Array<Static<typeof models.Todo>> };
+    };
+    ":todoId": {
+      get: {
+        body: unknown;
+        params: { todoId: string };
+        query: unknown;
+        headers: {};
+        response: {
+          readonly 200: Static<typeof models.Todo>;
+          readonly 404: string;
+        };
+      };
+    };
+  };
+};

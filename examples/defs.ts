@@ -1,16 +1,8 @@
-import {
-  Elysia,
-  type DefinitionBase,
-  type RouteBase,
-  type Static,
-} from "elysia";
+import { Elysia, type RouteBase, type Static } from "elysia";
 import { type SimplifyDeep } from "type-fest";
 import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
-export type Service<
-  Definitions extends DefinitionBase["type"],
-  Routes extends RouteBase,
-> = Elysia<
+export type Service<Routes extends RouteBase> = Elysia<
   "",
   false,
   {
@@ -20,7 +12,7 @@ export type Service<
     resolve: any;
   },
   {
-    type: SimplifyDeep<Definitions>;
+    type: any;
     error: any;
   },
   { schema: any; macro: any; macroFn: any },
@@ -37,11 +29,6 @@ export type Service<
   }
 >;
 
-export type TodoModels = {
-  Todo: Static<typeof models.Todo>;
-  Todos: Array<Static<typeof models.Todo>>;
-};
-
 export type TodoRoutes = {
   todos: {
     get: {
@@ -50,7 +37,7 @@ export type TodoRoutes = {
       query: unknown;
       headers: unknown;
       response: {
-        200: TodoModels["Todos"];
+        200: Array<Static<typeof models.Todo>>;
       };
     };
     ":todoId": {
@@ -62,7 +49,7 @@ export type TodoRoutes = {
         query: unknown;
         headers: unknown;
         response: {
-          readonly 200: TodoModels["Todo"];
+          readonly 200: Static<typeof models.Todo>;
           readonly 404: string;
         };
       };
@@ -70,13 +57,7 @@ export type TodoRoutes = {
   };
 };
 
-export type TodoService = Service<TodoModels, TodoRoutes>;
-
-export type PetModels = {
-  petType: Static<typeof models.petType>;
-  Pet: Static<typeof models.Pet>;
-  Pets: Array<Static<typeof models.Pet>>;
-};
+export type TodoService = Service<TodoRoutes>;
 
 export type PetRoutes = {
   pets: {
@@ -118,4 +99,4 @@ export type PetRoutes = {
   };
 };
 
-export type PetService = Service<PetModels, PetRoutes>;
+export type PetService = Service<PetRoutes>;

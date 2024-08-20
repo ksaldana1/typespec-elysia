@@ -45,5 +45,10 @@ namespace Pets {
     @body error: string;
     @statusCode statusCode: 404;
   };
-}
 
+  @post
+  op createPet(@body pet: Pet): {
+    @statusCode statusCode: 201;
+    @body newPet: Pet;
+  };
+}

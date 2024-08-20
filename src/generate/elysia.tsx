@@ -8,7 +8,6 @@ import {
 import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
 import { match, P } from "ts-pattern";
-import { PromiseGroup } from "elysia/utils";
 
 export const Definitions = ({ services }: { services: HttpService[] }) => {
   return services
@@ -128,31 +127,54 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
     httpOperation.operation,
   );
 
-  const queryParams = httpOperation.parameters.properties.filter(
-    (p) => p.kind === "query",
-  );
-
-  const pathParams = httpOperation.parameters.properties.filter(
-    (p) => p.kind === "path",
+  const { query, path, body } = Object.groupBy(
+    httpOperation.parameters.properties,
+    (property) => property.kind,
   );
 
   return (
     <>
-      <ts.InterfaceMember name="body" type="unknown" />
-      <Path properties={pathParams} />
-      <Query properties={queryParams} />
+      <Body properties={body} />
+      <Path properties={path} />
+      <Query properties={query} />
       <ts.InterfaceMember name="headers" type="unknown" />
       <Responses responses={responses} />
     </>
   );
 };
 
+const Body = ({ properties }: { properties?: HttpProperty[] }) => {
+  const type = properties?.reduce((acc, property) => {
+    console.log(property);
+    const t = match(property.property.type)
+      .with({ kind: "Model", name: "Array" }, (type) => {
+        // @ts-expect-error probably a better way
+        return `${property.property.name}: Array<Static<typeof models.${type.indexer?.value.name}>>;`;
+      })
+      .with({ kind: "Model", name: P.not("Array") }, (type) => {
+        return `${property.property.name}: Static<typeof models.${type.name}>;`;
+      })
+      .with({ kind: "Scalar" }, (type) => {
+        return `${property.property.name}: ${type.name === "string" ? type.name : "number"};`;
+      })
+      .otherwise(() => {
+        return `readonly ${property.property.name}: unknown;`;
+      });
+
+    return (acc += t);
+  }, "");
+  return (
+    <ts.InterfaceMember name="body" type={type ? `{ ${type} }` : `unknown`} />
+  );
+};
+
 const Path = ({ properties }: { properties?: HttpProperty[] }) => {
-  const type =
-    properties?.reduce((acc, curr) => {
-      return (acc += `${curr.property.name}: string\n`);
-    }, "") ?? "unknown";
-  return <ts.InterfaceMember name="params" type={`{ ${type} }`} />;
+  const type = properties?.reduce((acc, curr) => {
+    return (acc += `${curr.property.name}: string\n`);
+  }, "");
+  return (
+    <ts.InterfaceMember name="params" type={type ? `{ ${type} }` : `{}`} />
+  );
 };
 
 const Query = ({ properties }: { properties?: HttpProperty[] }) => {

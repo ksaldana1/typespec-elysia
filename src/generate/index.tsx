@@ -5,7 +5,7 @@ import { Enums } from "./enums.js";
 import { Models } from "./models.js";
 import { type Program } from "@typespec/compiler";
 import { ProgramProvider } from "./context/ProgramContext.js";
-import { Definitions, Routes } from "./elysia.js";
+import { Routes } from "./elysia.js";
 
 export const elysia = ts.createPackage({
   name: "elysia",

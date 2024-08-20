@@ -1,15 +1,9 @@
 import { Elysia, t, type Static } from "elysia";
 import { TodosRoutes } from "../tsp-output/tsp-elysia-emitter/service.js";
 import { Service } from "./defs.js";
-const Todo = t.Object({
-  id: t.Integer(),
-  text: t.String({ minLength: 1 }),
-  completed: t.Boolean(),
-});
+import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
-const Todos = t.Array(Todo);
-
-const _db: Record<string, Static<typeof Todo>> = {
+const _db: Record<string, Static<typeof models.Todo>> = {
   "1": {
     id: 1,
     text: "Do laundry",
@@ -24,8 +18,8 @@ const _db: Record<string, Static<typeof Todo>> = {
 
 export default new Elysia({ name: "Todo Store" })
   .model({
-    Todo,
-    Todos,
+    Todo: models.Todo,
+    Todos: t.Array(models.Todo),
   })
   .get("/todos", () => {
     return Object.values(_db);

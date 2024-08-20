@@ -3,24 +3,7 @@ import { PetsRoutes } from "../tsp-output/tsp-elysia-emitter/service.js";
 import { Service } from "./defs.js";
 import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
 
-const petType = t.Union([
-  t.Literal("cat"),
-  t.Literal("dog"),
-  t.Literal("fish"),
-  t.Literal("bird"),
-  t.Literal("reptile"),
-]);
-
-const Pet = t.Object({
-  id: t.Integer(),
-  name: t.String({ minLength: 1 }),
-  age: t.Integer({ minimum: 0, maximum: 100 }),
-  kind: petType,
-});
-
-const Pets = t.Array(Pet);
-
-const _db: Record<string, Static<typeof Pet>> = {
+const _db: Record<string, Static<typeof models.Pet>> = {
   "1": {
     id: 1,
     name: "Garfield",
@@ -37,16 +20,15 @@ const _db: Record<string, Static<typeof Pet>> = {
 
 export default new Elysia({ name: "Pet Store" })
   .model({
-    petType,
-    Pet,
-    Pets,
+    petType: models.petType,
+    Pet: models.Pet,
   })
   .get(
     "/pets",
     ({}) => {
       return Object.values(_db);
     },
-    { query: t.Object({ filter: petType }) },
+    { query: t.Object({ filter: models.petType }) },
   )
   .get("/pets/:petId", ({ params, error }) => {
     const pet = _db[params.petId];

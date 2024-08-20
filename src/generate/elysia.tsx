@@ -100,7 +100,6 @@ const RouteTypes = ({ httpOperation }: { httpOperation: HttpOperation }) => {
     program,
     httpOperation.operation,
   );
-  //console.log(httpOperation.parameters.properties);
 
   const { query, path, body, header } = Object.groupBy(
     httpOperation.parameters.properties,

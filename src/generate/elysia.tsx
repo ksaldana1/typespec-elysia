@@ -9,32 +9,6 @@ import * as ts from "@alloy-js/typescript";
 import { useProgramContext } from "./context/ProgramContext.js";
 import { match, P } from "ts-pattern";
 
-export const Definitions = ({ services }: { services: HttpService[] }) => {
-  return services
-    .map((service) => Array.from(service.operations.values()))
-    .map((operations) => (
-      <>
-        <ts.InterfaceDeclaration
-          name={`${operations.at(0)?.container.name}Models`}
-        >
-          {operations.map((operation) => (
-            <Definition operation={operation} />
-          ))}
-        </ts.InterfaceDeclaration>
-        {"\n"}
-      </>
-    ));
-};
-
-const Definition = ({ operation }: { operation: HttpOperation }) => {
-  const program = useProgramContext();
-  const [responses, _diagnostics] = getResponsesForOperation(
-    program,
-    operation.operation,
-  );
-  return null;
-};
-
 export const Routes = ({ services }: { services: HttpService[] }) => {
   return services
     .map((service) => Array.from(service.operations.values()))
@@ -226,4 +200,30 @@ const Responses = ({ responses }: { responses: HttpOperationResponse[] }) => {
       type={type ? `{ ${type} }` : "unknown"}
     />
   );
+};
+
+export const Definitions = ({ services }: { services: HttpService[] }) => {
+  return services
+    .map((service) => Array.from(service.operations.values()))
+    .map((operations) => (
+      <>
+        <ts.InterfaceDeclaration
+          name={`${operations.at(0)?.container.name}Models`}
+        >
+          {operations.map((operation) => (
+            <Definition operation={operation} />
+          ))}
+        </ts.InterfaceDeclaration>
+        {"\n"}
+      </>
+    ));
+};
+
+const Definition = ({ operation }: { operation: HttpOperation }) => {
+  const program = useProgramContext();
+  const [responses, _diagnostics] = getResponsesForOperation(
+    program,
+    operation.operation,
+  );
+  return null;
 };

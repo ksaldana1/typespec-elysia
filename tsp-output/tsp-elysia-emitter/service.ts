@@ -26,8 +26,8 @@ export type PetsRoutes = {
       body: { pet: Static<typeof models.Pet> };
       params: {};
       query: unknown;
-      headers: unknown;
-      response: { readonly 200: Static<typeof models.Pet> };
+      headers: { "request-id": string };
+      response: { readonly 201: Static<typeof models.Pet> };
     };
   };
 };

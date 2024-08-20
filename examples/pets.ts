@@ -57,8 +57,12 @@ export default new Elysia({ name: "Pet Store" })
   })
   .post(
     "/pets",
-    ({ body }) => {
-      return body.pet;
+    ({ body, error }) => {
+      // would be nice to have a success wrapper this reads awful
+      return error(201, body.pet);
     },
-    { body: t.Object({ pet: models.Pet }) },
+    {
+      body: t.Object({ pet: models.Pet }),
+      headers: t.Object({ "request-id": t.String() }),
+    },
   ) satisfies Service<PetsRoutes>;

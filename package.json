@@ -5,6 +5,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
+    "generate": "tsp compile ./schemas/gateway.tsp",
     "build-src": "babel src -d dist --extensions '.ts,.tsx'",
     "build": "tsc -p . && npm run build-src",
     "watch-src": "babel src -d dist --extensions '.ts,.tsx' --watch",

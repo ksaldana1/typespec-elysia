@@ -34,4 +34,4 @@ export const client = treaty<Gateway<[PetService, TodoService]>>(
   "http://localhost:3000",
 );
 
-const { data, error } = await client.pets.get({ query: { filter: "cat" } });
+const { data, error } = await client.pets({ petId: "123" }).get();

@@ -19,19 +19,20 @@ const _db: Record<string, Static<typeof models.Pet>> = {
 };
 
 export default new Elysia({ name: "Pet Store" })
+  .decorate("db", _db)
   .model({
     petType: models.petType,
     Pet: models.Pet,
   })
   .get(
     "/pets",
-    ({}) => {
-      return Object.values(_db);
+    ({ db }) => {
+      return Object.values(db);
     },
     { query: t.Object({ filter: models.petType }) },
   )
-  .get("/pets/:petId", ({ params, error }) => {
-    const pet = _db[params.petId];
+  .get("/pets/:petId", ({ params, error, db }) => {
+    const pet = db[params.petId];
     if (!pet) {
       return error(404, "Not found");
     }
@@ -41,7 +42,7 @@ export default new Elysia({ name: "Pet Store" })
     "/pets",
     ({ body, error }) => {
       // would be nice to have a success wrapper this reads awful
-      return error(201, body.pet);
+      //return error(201, body.pet);
     },
     {
       body: t.Object({ pet: models.Pet }),

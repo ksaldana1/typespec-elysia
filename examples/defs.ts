@@ -1,6 +1,9 @@
-import { Elysia, type RouteBase, type Static } from "elysia";
-import { type SimplifyDeep } from "type-fest";
-import * as models from "../tsp-output/tsp-elysia-emitter/models.js";
+import { Elysia, type RouteBase } from "elysia";
+import { type UnionToIntersection, type SimplifyDeep } from "type-fest";
+import {
+  type TodosRoutes,
+  type PetsRoutes,
+} from "../tsp-output/tsp-elysia-emitter/service.js";
 
 export type Service<Routes extends RouteBase> = Elysia<
   "",
@@ -29,74 +32,25 @@ export type Service<Routes extends RouteBase> = Elysia<
   }
 >;
 
-export type TodoRoutes = {
-  todos: {
-    get: {
-      body: unknown;
-      params: {};
-      query: unknown;
-      headers: unknown;
-      response: {
-        200: Array<Static<typeof models.Todo>>;
-      };
-    };
-    ":todoId": {
-      get: {
-        body: unknown;
-        params: {
-          todoId: string;
-        };
-        query: unknown;
-        headers: unknown;
-        response: {
-          readonly 200: Static<typeof models.Todo>;
-          readonly 404: string;
-        };
-      };
-    };
+type GatewaySchema<T extends Array<Elysia<any, any, any, any>>> = {
+  [K in keyof T]: {
+    routes: T[K]["_routes"];
   };
 };
 
-export type TodoService = Service<TodoRoutes>;
+type Routes<T extends Array<Elysia<any, any, any, any>>> = UnionToIntersection<
+  GatewaySchema<T>[number]["routes"]
+>;
 
-export type PetRoutes = {
-  pets: {
-    get: {
-      body: unknown;
-      params: {};
-      query: {
-        filter?: "cat" | "dog" | "fish" | "bird" | "reptile";
-      };
-      headers: unknown;
-      response: {
-        readonly 200: {
-          name: string;
-          id: number;
-          age: number;
-          kind: "cat" | "dog" | "fish" | "bird" | "reptile";
-        }[];
-      };
-    };
-    ":petId": {
-      get: {
-        body: unknown;
-        params: {
-          petId: string;
-        };
-        query: unknown;
-        headers: unknown;
-        response: {
-          readonly 200: {
-            name: string;
-            id: number;
-            age: number;
-            kind: "cat" | "dog" | "fish" | "bird" | "reptile";
-          };
-          readonly 404: string;
-        };
-      };
-    };
-  };
-};
+export type Gateway<T extends Array<Elysia<any, any, any, any>>> = Elysia<
+  "",
+  false,
+  any,
+  any,
+  any,
+  Routes<T>
+>;
 
-export type PetService = Service<PetRoutes>;
+export type PetService = Service<PetsRoutes>;
+
+export type TodoService = Service<TodosRoutes>;

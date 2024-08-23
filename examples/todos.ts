@@ -17,15 +17,16 @@ const _db: Record<string, Static<typeof models.Todo>> = {
 };
 
 export default new Elysia({ name: "Todo Store" })
+  .decorate("db", _db)
   .model({
     Todo: models.Todo,
     Todos: t.Array(models.Todo),
   })
-  .get("/todos", () => {
-    return Object.values(_db);
+  .get("/todos", ({ db }) => {
+    return Object.values(db);
   })
-  .get("/todos/:todoId", ({ params, error }) => {
-    const todo = _db[params.todoId];
+  .get("/todos/:todoId", ({ params, error, db }) => {
+    const todo = db[params.todoId];
     if (!todo) {
       return error(404, "Not found");
     }

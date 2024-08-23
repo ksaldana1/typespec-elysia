@@ -42,7 +42,7 @@ export default new Elysia({ name: "Pet Store" })
     "/pets",
     ({ body, error }) => {
       // would be nice to have a success wrapper this reads awful
-      //return error(201, body.pet);
+      return error(201, body.pet);
     },
     {
       body: t.Object({ pet: models.Pet }),
